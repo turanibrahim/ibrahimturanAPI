@@ -13,9 +13,15 @@ class AboutSectionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($lang)
+    public function index(Request $request)
     {
-        return AboutSectionResource::collection(AboutSection::all()->where('lang', $lang)->sortBy('sequence'));
+        if($request->query('lang')){
+            $lang = $request->query('lang');
+            return AboutSectionResource::collection(AboutSection::all()->where('lang', $lang)->sortBy('sequence'));
+
+        }
+
+        return AboutSectionResource::collection(AboutSection::all()->sortBy('sequence'));
     }
 
     /**
@@ -33,7 +39,18 @@ class AboutSectionController extends Controller
             'lang' => $request->lang,
             'sequence' => $request->sequence,
         ]);
-    
+
+        return new AboutSectionResource($aboutSection);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  AboutSection  $aboutSection
+     * @return \Illuminate\Http\Response
+     */
+    public function show(AboutSection  $aboutSection)
+    {
         return new AboutSectionResource($aboutSection);
     }
 
