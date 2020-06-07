@@ -8,7 +8,7 @@ use App\Http\Resources\ExperienceResource as ExperienceResource;
 
 class ExperienceController extends Controller
 {
-    
+
     public function __construct()
     {
       $this->middleware('auth:api')->except(['index']);
@@ -19,9 +19,14 @@ class ExperienceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($lang)
+    public function index(Request $request)
     {
-        return ExperienceResource::collection(Experience::all()->where('lang', $lang)->sortByDesc('startingDate'));
+        if($request->query('lang')){
+            $lang = $request->query('lang');
+            return ExperienceResource::collection(Experience::all()->where('lang', $lang)->sortByDesc('startingDate'));
+        }
+
+        return ExperienceResource::collection(Experience::all()->sortByDesc('startingDate'));
     }
 
     /**
@@ -41,7 +46,7 @@ class ExperienceController extends Controller
             'logo' => $request->logo,
             'lang' => $request->lang,
         ]);
-    
+
         return new ExperienceResource($experience);
     }
 
