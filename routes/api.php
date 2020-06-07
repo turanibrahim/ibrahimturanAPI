@@ -18,9 +18,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::apiResource('experience', 'ExperienceController')->except(['show']);
-Route::get('experience/{lang}', 'ExperienceController@index');
-Route::apiResource('socialMedia', 'SocialMediaController')->except(['show']);
-Route::apiResource('contactForm', 'ContactFormController');
-Route::apiResource('aboutSection', 'AboutSectionController')->except(['show']);
-Route::get('aboutSection/{lang}', 'AboutSectionController@index');
+Route::apiResources([
+    'experience' => 'ExperienceController',
+    'socialMedia' => 'SocialMediaController',
+    'contactForm' => 'ContactFormController',
+    'aboutSection' => 'AboutSectionController',
+    'meta' => 'MetaController',
+]);
+Route::get('meta/{hid}/{lang}', 'MetaController@getWithHid');
