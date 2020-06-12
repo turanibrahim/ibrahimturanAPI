@@ -24,5 +24,14 @@ Route::apiResources([
     'contactForm' => 'ContactFormController',
     'aboutSection' => 'AboutSectionController',
     'meta' => 'MetaController',
+    'post' => 'PostController',
 ]);
+
 Route::get('meta/{hid}/{lang}', 'MetaController@getWithHid');
+
+Route::get('post/getMdFile/{id}', 'PostController@getMdFile');
+
+Route::prefix('postView')->group(function () {
+    Route::post('increase', 'PostViewController@increase');
+});
+
