@@ -161,7 +161,6 @@ class PostController extends Controller
             ->groupBy('posts.id')
             ->first()
         );
-        return $post->id;
     }
 
     /**
