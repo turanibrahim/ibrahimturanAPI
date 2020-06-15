@@ -35,6 +35,6 @@ class Post extends Model
      */
     public function votes()
     {
-        return $this->hasMany('App\Models\Vote');
+        return $this->hasMany('App\Models\PostVote');
     }
 }
