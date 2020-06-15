@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PostViewController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,19 +20,16 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::apiResources([
-    'experience' => 'ExperienceController',
-    'socialMedia' => 'SocialMediaController',
-    'contactForm' => 'ContactFormController',
-    'aboutSection' => 'AboutSectionController',
-    'meta' => 'MetaController',
-    'post' => 'PostController',
+    'experiences' => 'ExperienceController',
+    'socialmedia' => 'SocialMediaController',
+    'contactforms' => 'ContactFormController',
+    'aboutsections' => 'AboutSectionController',
+    'posts' => 'PostController',
 ]);
+Route::get('metas/{hid}/{lang}', '@withHid');
 
-Route::get('meta/{hid}/{lang}', 'MetaController@getWithHid');
+Route::get('posts/mdfile/{id}', 'PostController@mdFile');
 
-Route::get('post/getMdFile/{id}', 'PostController@getMdFile');
-
-Route::prefix('postView')->group(function () {
-    Route::post('increase', 'PostViewController@increase');
-});
+Route::apiResource('posts.views', 'PostViewController')->only('store');
+Route::apiResource('posts.votes', 'PostVoteController')->only('store');
 
