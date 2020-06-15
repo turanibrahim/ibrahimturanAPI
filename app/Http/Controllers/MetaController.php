@@ -82,7 +82,7 @@ class MetaController extends Controller
      * @param  string  $lang
      * @return \Illuminate\Http\Response
      */
-    public function getWithHid($hid, $lang)
+    public function withHid($hid, $lang)
     {
         return new MetaResource(Meta::where(['hid' => $hid, 'lang' => $lang])->firstOrFail());
     }
