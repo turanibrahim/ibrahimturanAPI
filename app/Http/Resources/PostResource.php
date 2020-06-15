@@ -20,7 +20,6 @@ class PostResource extends JsonResource
             'description' => $this->description,
             'image' => $this->image,
             'mdFile' => $this->mdFile,
-            'readCount' => $this->readCount,
             'keys' => $this->keys,
             'lang' => $this->lang,
             'viewCount' => $this->view_count,
