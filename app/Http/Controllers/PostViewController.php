@@ -13,14 +13,11 @@ class PostViewController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function increase(Request $request)
+    public function store(Request $request)
     {
-        $ipAddress = $request->data['ipAddress'];
-        $postId = $request->data['postId'];
-
         PostView::updateOrCreate(
-            ['post_id' => $postId, 'ip_address' => $ipAddress],
-            ['post_id' => $postId, 'ip_address' =>$ipAddress]
+            ['post_id' => $request->postId, 'ip_address' => $request->ipAddress],
+            ['post_id' => $request->postId, 'ip_address' => $request->ipAddress]
         );
         return response(['status' => 'success'], 200)->header('Content-Type', 'text/json');
     }
