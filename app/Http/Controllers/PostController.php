@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Post;
-use App\Models\Vote;
+use App\Models\PostVote;
 use App\Http\Resources\PostResource as PostResource;
 
 class PostController extends Controller
@@ -12,7 +12,7 @@ class PostController extends Controller
 
     public function __construct()
     {
-      $this->middleware('auth:api')->except(['index', 'show', 'getMdFile']);
+      $this->middleware('auth:api')->except(['index', 'show', 'mdFile']);
     }
 
     /**
@@ -34,15 +34,15 @@ class PostController extends Controller
             $orderBy = $request->query('orderBy');
         }
 
-        $thumbsUps = Vote::select('post_id', Vote::raw('COUNT(id)'))
+        $thumbsUps = PostVote::select('post_id', PostVote::raw('COUNT(id)'))
             ->where('vote_type', 1)
             ->groupBy('post_id');
 
-        $thumbsDowns = Vote::select('post_id', Vote::raw('COUNT(id)'))
+        $thumbsDowns = PostVote::select('post_id', PostVote::raw('COUNT(id)'))
             ->where('vote_type', 2)
             ->groupBy('post_id');
 
-        $hearts = Vote::select('post_id', Vote::raw('COUNT(id)'))
+        $hearts = PostVote::select('post_id', PostVote::raw('COUNT(id)'))
             ->where('vote_type', 3)
             ->groupBy('post_id');
 
@@ -129,15 +129,15 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        $thumbsUps = Vote::select('post_id', Vote::raw('COUNT(id)'))
+        $thumbsUps = PostVote::select('post_id', PostVote::raw('COUNT(id)'))
             ->where('vote_type', 1)
             ->groupBy('post_id');
 
-        $thumbsDowns = Vote::select('post_id', Vote::raw('COUNT(id)'))
+        $thumbsDowns = PostVote::select('post_id', PostVote::raw('COUNT(id)'))
             ->where('vote_type', 2)
             ->groupBy('post_id');
 
-        $hearts = Vote::select('post_id', Vote::raw('COUNT(id)'))
+        $hearts = PostVote::select('post_id', PostVote::raw('COUNT(id)'))
             ->where('vote_type', 3)
             ->groupBy('post_id');
 
@@ -205,7 +205,7 @@ class PostController extends Controller
      * @param  $id
      * @return \Illuminate\Http\Response
      */
-    public function getMdFile($id)
+    public function mdFile($id)
     {
         $path = public_path()."/md/".$id.".md";
 
