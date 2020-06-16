@@ -15,10 +15,20 @@ class PostViewController extends Controller
      */
     public function store(Request $request)
     {
-        PostView::updateOrCreate(
-            ['post_id' => $request->postId, 'ip_address' => $request->ipAddress],
-            ['post_id' => $request->postId, 'ip_address' => $request->ipAddress]
-        );
-        return response(['status' => 'success'], 200)->header('Content-Type', 'text/json');
+        $isVoted = PostView::where([
+            'post_id' => $request->postId,
+            'ip_address' => $request->ipAddress
+        ])->count();
+
+        if(!$isVoted){
+            PostView::create([
+                'post_id' => $request->postId,
+                'ip_address' => $request->ipAddress
+            ]);
+
+            return response(['updated' => true], 200)->header('Content-Type', 'text/json');
+        }else {
+            return response(['updated' => false], 200)->header('Content-Type', 'text/json');
+        }   
     }
 }
