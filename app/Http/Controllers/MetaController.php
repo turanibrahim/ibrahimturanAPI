@@ -8,6 +8,11 @@ use App\Http\Resources\MetaResource as MetaResource;
 
 class MetaController extends Controller
 {
+    public function __construct()
+    {
+      $this->middleware('auth:api')->except(['index', 'show', 'withHid']);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -84,6 +89,6 @@ class MetaController extends Controller
      */
     public function withHid($hid, $lang)
     {
-        return new MetaResource(Meta::where(['hid' => $hid, 'lang' => $lang])->firstOrFail());
+        return new MetaResource(Meta::where(['hid' => $hid, 'lang' => $lang])->first());
     }
 }
