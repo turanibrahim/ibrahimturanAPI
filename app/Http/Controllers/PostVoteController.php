@@ -20,7 +20,7 @@ class PostVoteController extends Controller
             'vote_type' => $request->voteType,
             'ip_address' => $request->ipAddress
         ])->count();
-        
+
         if(!$isVoted){
             PostVote::create([
                 'post_id' => $request->postId,
@@ -32,6 +32,5 @@ class PostVoteController extends Controller
         }else {
             return response(['updated' => false], 200)->header('Content-Type', 'text/json');
         }
-
     }
 }

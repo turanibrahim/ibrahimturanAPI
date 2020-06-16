@@ -25,8 +25,9 @@ Route::apiResources([
     'contactforms' => 'ContactFormController',
     'aboutsections' => 'AboutSectionController',
     'posts' => 'PostController',
+    'metas' => 'MetaController',
 ]);
-Route::get('metas/{hid}/{lang}', '@withHid');
+Route::get('metas/{hid}/{lang}', 'MetaController@withHid');
 
 Route::get('posts/mdfile/{id}', 'PostController@mdFile');
 
