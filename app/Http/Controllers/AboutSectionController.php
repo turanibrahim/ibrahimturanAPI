@@ -18,9 +18,8 @@ class AboutSectionController extends Controller
         if($request->query('lang')){
             $lang = $request->query('lang');
             return AboutSectionResource::collection(AboutSection::all()->where('lang', $lang)->sortBy('sequence'));
-
         }
-
+        
         return AboutSectionResource::collection(AboutSection::all()->sortBy('sequence'));
     }
 

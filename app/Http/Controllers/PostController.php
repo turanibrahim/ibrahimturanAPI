@@ -20,11 +20,12 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, Post $posts)
     {
         $filters = ['published' => true ];
         $orderColumn = "created_at";
         $orderBy = "desc";
+        $search="";
 
         if($request->query('lang')&&  $request->query('lang') !== 'all'){
             $filters += ['lang' => $request->query('lang')];
@@ -34,65 +35,11 @@ class PostController extends Controller
             $orderBy = $request->query('orderBy');
         }
 
-        $thumbsUps = PostVote::select('post_id', PostVote::raw('COUNT(id)'))
-            ->where('vote_type', 1)
-            ->groupBy('post_id');
-
-        $thumbsDowns = PostVote::select('post_id', PostVote::raw('COUNT(id)'))
-            ->where('vote_type', 2)
-            ->groupBy('post_id');
-
-        $hearts = PostVote::select('post_id', PostVote::raw('COUNT(id)'))
-            ->where('vote_type', 3)
-            ->groupBy('post_id');
-
         if($request->query('search')){
             $search = $request->query('search');
-            return PostResource::collection(Post::where($filters)
-                ->where(function ($query)  use ($search) {
-                    $query->where('title', 'like', '%'.$search.'%')
-                        ->orWhere('description', 'like', '%'.$search.'%')
-                        ->orWhere('keys', 'like', '%'.$search.'%');
-                })
-                ->leftJoin('post_views', 'posts.id', '=', 'post_views.post_id')
-                ->selectRaw('
-                    posts.*,
-                    COUNT(post_views.id) as view_count,
-                    COUNT(thumbs_ups) as thumbs_ups,
-                    COUNT(thumbs_downs) as thumbs_downs,
-                    COUNT(hearts) as hearts')
-                ->leftJoinSub($thumbsUps, 'thumbs_ups', function ($join) {
-                    $join->on('posts.id', '=', 'thumbs_ups.post_id');
-                })
-                ->leftJoinSub($thumbsDowns, 'thumbs_downs', function ($join) {
-                    $join->on('posts.id', '=', 'thumbs_downs.post_id');
-                })
-                ->leftJoinSub($hearts, 'hearts', function ($join) {
-                    $join->on('posts.id', '=', 'hearts.post_id');
-                })
-                ->groupBy('posts.id')
-                ->orderBy($orderColumn, $orderBy)
-                ->paginate(12)
-            );
         }
 
-        return PostResource::collection(Post::where($filters)
-            ->leftJoin('post_views', 'posts.id', '=', 'post_views.post_id')
-            ->selectRaw('
-                posts.*,
-                COUNT(post_views.id) as view_count,
-                COUNT(thumbs_ups) as thumbs_ups,
-                COUNT(thumbs_downs) as thumbs_downs,
-                COUNT(hearts) as hearts')
-            ->leftJoinSub($thumbsUps, 'thumbs_ups', function ($join) {
-                $join->on('posts.id', '=', 'thumbs_ups.post_id');
-            })
-            ->leftJoinSub($thumbsDowns, 'thumbs_downs', function ($join) {
-                $join->on('posts.id', '=', 'thumbs_downs.post_id');
-            })
-            ->leftJoinSub($hearts, 'hearts', function ($join) {
-                $join->on('posts.id', '=', 'hearts.post_id');
-            })
+        return PostResource::collection(Post::posts($search)->where($filters)
             ->groupBy('posts.id')
             ->orderBy($orderColumn, $orderBy)
             ->paginate(12)
@@ -127,39 +74,12 @@ class PostController extends Controller
      * @param  Post $post
      * @return \Illuminate\Http\Response
      */
-    public function show(Post $post)
+    public function show($id)
     {
-        $thumbsUps = PostVote::select('post_id', PostVote::raw('COUNT(id)'))
-            ->where('vote_type', 1)
-            ->groupBy('post_id');
-
-        $thumbsDowns = PostVote::select('post_id', PostVote::raw('COUNT(id)'))
-            ->where('vote_type', 2)
-            ->groupBy('post_id');
-
-        $hearts = PostVote::select('post_id', PostVote::raw('COUNT(id)'))
-            ->where('vote_type', 3)
-            ->groupBy('post_id');
-
-        return new PostResource(Post::where('posts.id', '=', $post->id)
-            ->leftJoin('post_views', 'posts.id', '=', 'post_views.post_id')
-            ->selectRaw('
-                posts.*,
-                COUNT(post_views.id) as view_count,
-                COUNT(thumbs_ups) as thumbs_ups,
-                COUNT(thumbs_downs) as thumbs_downs,
-                COUNT(hearts) as hearts')
-            ->leftJoinSub($thumbsUps, 'thumbs_ups', function ($join) {
-                $join->on('posts.id', '=', 'thumbs_ups.post_id');
-            })
-            ->leftJoinSub($thumbsDowns, 'thumbs_downs', function ($join) {
-                $join->on('posts.id', '=', 'thumbs_downs.post_id');
-            })
-            ->leftJoinSub($hearts, 'hearts', function ($join) {
-                $join->on('posts.id', '=', 'hearts.post_id');
-            })
+        return new PostResource(Post::posts()
+            ->where('posts.id', '=', $id)
             ->groupBy('posts.id')
-            ->first()
+            ->firstOrFail()
         );
     }
 
