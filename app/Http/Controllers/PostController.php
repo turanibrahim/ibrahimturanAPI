@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\PostVote;
-use App\Http\Resources\PostResource as PostResource;
+use App\Http\Resources\PostResource;
 
 class PostController extends Controller
 {
