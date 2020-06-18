@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use PhpParser\Node\Expr\FuncCall;
 
 class Post extends Model
 {
@@ -37,6 +36,14 @@ class Post extends Model
     public function votes()
     {
         return $this->hasMany('App\Models\PostVote');
+    }
+
+    /**
+     * Get the comments for the blog post.
+     */
+    public function postComments()
+    {
+        return $this->hasMany('App\Models\Comment');
     }
 
     /**
