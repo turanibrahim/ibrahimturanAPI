@@ -33,4 +33,5 @@ Route::get('posts/mdfile/{id}', 'PostController@mdFile');
 
 Route::apiResource('posts.views', 'PostViewController')->only('store');
 Route::apiResource('posts.votes', 'PostVoteController')->only('store');
+Route::apiResource('posts.comments', 'PostCommentController')->except('update');
 
