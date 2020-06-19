@@ -8,6 +8,12 @@ use App\Http\Resources\PostCommentResource;
 
 class PostCommentController extends Controller
 {
+
+    public function __construct()
+    {
+      $this->middleware('auth:api')->except(['index, store']);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -28,7 +34,17 @@ class PostCommentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $postComment = PostComment::create([
+            'post_id' => $request->post_id,
+            'name' => $request->name,
+            'surname' => $request->surname,
+            'email' => $request->email,
+            'comment' => $request->comment,
+            'reply_to' => $request->reply_to,
+            'approved' => false
+        ]);
+
+        return new PostCommentResource($postComment);
     }
 
     /**
@@ -37,19 +53,25 @@ class PostCommentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($postId, $commentId)
     {
-        //
+        return new PostCommentResource(PostComment::
+            where('id', '=' , $commentId)
+            ->with('parentComment:id,name,surname,comment')->firstOrFail()
+        );
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  PostComment  $post_comment
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($postId , $commentId)
     {
-        //
+
+        PostComment::findOrFail($commentId)->delete();
+
+        return response()->json(null, 204);
     }
 }
