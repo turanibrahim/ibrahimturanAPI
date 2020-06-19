@@ -17,7 +17,8 @@ class PostComment extends Model
         'post_id',
         'reply_to',
         'email',
-        'comment'
+        'comment',
+        'approved'
     ];
 
     /**
